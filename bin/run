@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+set -e
+
+if [ "$1" = "develop" ]; then
+  export RACK_ENV=development
+fi
+
+docker-compose up --build --force-recreate -t 0

@@ -1,0 +1,25 @@
+<% if refresh %>
+  <meta http-equiv="refresh" content="<%= refresh %>">
+<% end %>
+
+<h1>cacheable</h1>
+
+<pre>
+hostname: <%= ENV['HOSTNAME'] %>
+now: <%= Time.now.to_s %>
+cache: <%= cache_enabled %>
+max_age: <%= max_age %>
+refresh: <%= refresh %>
+</pre>
+
+<fieldset>
+  <legend>usage</legend>
+<pre>
+<a href="/">/</a>
+<a href="/yes/20">/yes/20</a>
+<a href="/yes/20/1">/yes/20/1</a>
+
+<a href="/?cache_enabled=yes&max_age=20">/?cache_enabled=yes&max_age=20</a>
+<a href="/?cache_enabled=yes&max_age=20&refresh=1">/?cache_enabled=yes&max_age=20&refresh=1</a>
+</pre>
+</fieldset>

@@ -1,0 +1,8 @@
+.git
+.gitignore
+.ruby-gemset
+.ruby-version
+bin
+docker-compose.yml
+Dockerfile
+README.md

@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+set -e
+
+
+if [ "$RACK_ENV" = "development" ]; then
+  bundle --with "development test"
+else
+  bundle --without "development test"
+fi
+
+bundle exec rackup -s Puma -o 0.0.0.0 -p 8080

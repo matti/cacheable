@@ -1,0 +1,13 @@
+version: '2.1'
+
+services:
+  web:
+    image: mattipaksula/cacheable
+    build: .
+    ports:
+      - 4567:8080
+    environment:
+      - RACK_ENV=${RACK_ENV:-production}
+    volumes:
+      - .:/app
+      - /usr/local/bundle
