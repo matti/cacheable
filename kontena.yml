@@ -1,0 +1,63 @@
+stack: matti/cacheable
+version: 0.0.1
+expose: web
+
+variables:
+  lb_service:
+    type: string
+    required: false
+    from:
+      service_link:
+        prompt: Pick a loadbalancer
+        image: kontena/lb
+        name: lb
+
+  lb_domain:
+    only_if: lb_service
+    type: string
+    min_length: 1
+    default: cacheable.kontena.rocks
+    from:
+      prompt:
+
+  lb_https_redirect:
+    only_if: lb_service
+    type: boolean
+    from:
+      prompt:
+
+  lb_https_redirect_forwarded:
+    only_if: lb_service
+    type: boolean
+    from:
+      prompt:
+
+services:
+  web:
+    image: mattipaksula/cacheable
+    deploy:
+      strategy: daemon
+      wait_for_port: 8080
+      min_health: 0.5
+      interval: 24h
+    affinity:
+      - label!=no-cacheable
+    environment:
+      - KONTENA_LB_MODE=http
+      - KONTENA_LB_INTERNAL_PORT=8080
+      - KONTENA_LB_VIRTUAL_HOSTS={{ lb_domain }}
+      # {% if lb_https_redirect %}
+      - KONTENA_LB_CUSTOM_SETTINGS=redirect scheme https if !{ ssl_fc }
+      # {% endif %}
+      # {% if lb_https_redirect_forwarded %}
+      - KONTENA_LB_CUSTOM_SETTINGS=redirect scheme https if !{ hdr(X-Forwarded-Proto) -i https }
+      # {% endif %}
+    health_check:
+      protocol: http
+      port: 8080
+      interval: 10
+      uri: /health
+      initial_delay: 30
+      timeout: 2
+    links:
+      - {{ lb_service }}
